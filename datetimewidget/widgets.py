@@ -113,7 +113,6 @@ BOOTSTRAP_INPUT_TEMPLATE = {
        <div id="%(id)s" class="input-group date">
            %(rendered_widget)s
            %(clear_button)s
-           <span class="input-group-addon"><span class="glyphicon %(glyphicon)s"></span></span>
        </div>
        <script type="text/javascript">
            $(function() { $("#%(id)s").datetimepicker({%(options)s}).find('input').addClass("form-control"); } );
