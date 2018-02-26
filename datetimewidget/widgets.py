@@ -110,15 +110,12 @@ BOOTSTRAP_INPUT_TEMPLATE = {
        </script>
        """,
     3: """
-       <div id="%(id)s" class="input-group date">
-           %(rendered_widget)s
-           %(clear_button)s
-       </div>
-       <script type="text/javascript">
-           $(function() { $("#%(id)s").datetimepicker({%(options)s}).find('input').addClass("form-control"); } );
-       </script>
-       """
-       }
+        %(rendered_widget)s
+        <script type="text/javascript">
+        $(function() { $("#%(id)s").datetimepicker({%(options)s}).find('input').addClass('form-control'); });
+        </script>
+        """
+}
 
 CLEAR_BTN_TEMPLATE = {2: """<span class="add-on"><i class="icon-remove"></i></span>""",
                       3: """<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>"""}
