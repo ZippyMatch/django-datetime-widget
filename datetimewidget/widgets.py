@@ -234,7 +234,7 @@ class PickerWidgetMixin(object):
         js_options = ",\n".join(options_list)
 
         # Use provided id or generate hex to avoid collisions in document
-        id = final_attrs.get('id', uuid.uuid4().hex)
+        id = final_attrs.get('id', name)
 
         clearBtn = quote('clearBtn', self.options.get('clearBtn', 'true')) == 'true'
 
