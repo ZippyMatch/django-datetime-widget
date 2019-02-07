@@ -11,6 +11,8 @@ from django.utils.formats import get_format, get_language
 from django.utils.safestring import mark_safe
 from django.utils.six import string_types
 
+import embedded_media as emb
+
 try:
     from django.forms.widgets import to_current_timezone
 except ImportError:
@@ -105,16 +107,23 @@ BOOTSTRAP_INPUT_TEMPLATE = {
            %(clear_button)s
            <span class="add-on"><i class="icon-th"></i></span>
        </div>
-       <script type="text/javascript">
-           $(function() { $("#%(id)s").datetimepicker({%(options)s}); });
-       </script>
        """,
     3: """
         %(rendered_widget)s
-        <script type="text/javascript">
-        $(function() { $("#%(id)s").datetimepicker({%(options)s}).find('input').addClass('form-control'); });
-        </script>
         """
+}
+
+SCRIPT_TEMPLATE = {
+    2: """
+    <script type="text/javascript">
+       $(function() { $("#%(id)s").datetimepicker({%(options)s}); });
+   </script>
+    """,
+    3: """
+    <script type="text/javascript">
+    $(function() { $("#%(id)s").datetimepicker({%(options)s}).find('input').addClass('form-control'); });
+    </script>
+    """
 }
 
 CLEAR_BTN_TEMPLATE = {2: """<span class="add-on"><i class="icon-remove"></i></span>""",
@@ -231,6 +240,7 @@ class PickerWidgetMixin(object):
 
         # Use provided id or generate hex to avoid collisions in document
         id = final_attrs.get('id', name)
+        self.id = id
 
         clearBtn = quote('clearBtn', self.options.get('clearBtn', 'true')) == 'true'
 
@@ -252,6 +262,16 @@ class PickerWidgetMixin(object):
         language = self.options.get('language', 'en')
         if language != 'en':
             js.append("js/locales/bootstrap-datetimepicker.%s.js" % language)
+
+        options_list = []
+        for key, value in iter(self.options.items()):
+            options_list.append("%s: %s" % (key, quote(key, value)))
+        js_options = ",\n".join(options_list)
+
+        js.append(emb.JS(SCRIPT_TEMPLATE.format(
+            id=self.id,
+            options=js_options
+        )))
 
         return widgets.Media(
             css={
