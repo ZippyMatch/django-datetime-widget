@@ -268,7 +268,7 @@ class PickerWidgetMixin(object):
             options_list.append("%s: %s" % (key, quote(key, value)))
         js_options = ",\n".join(options_list)
 
-        js.append(emb.JS(SCRIPT_TEMPLATE.format(
+        js.append(emb.JS(SCRIPT_TEMPLATE[self.bootstrap_version].format(
             id=self.id,
             options=js_options
         )))
