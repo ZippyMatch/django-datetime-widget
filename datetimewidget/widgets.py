@@ -115,14 +115,10 @@ BOOTSTRAP_INPUT_TEMPLATE = {
 
 SCRIPT_TEMPLATE = {
     2: """
-    <script type="text/javascript">
-       $(function() { $("#%(id)s").datetimepicker({%(options)s}); });
-   </script>
+   $(function() { $("#%(id)s").datetimepicker({%(options)s}); });
     """,
     3: """
-    <script type="text/javascript">
     $(function() { $("#%(id)s").datetimepicker({%(options)s}).find('input').addClass('form-control'); });
-    </script>
     """
 }
 
@@ -224,6 +220,9 @@ class PickerWidgetMixin(object):
 
         super(PickerWidgetMixin, self).__init__(attrs, format=self.format)
 
+        final_attrs = self.build_attrs(attrs)
+        self.id = final_attrs.get('id', uuid.uuid4().hex)
+
     def render(self, name, value, renderer=None, attrs=None):
         final_attrs = self.build_attrs(attrs)
         rendered_widget = super(PickerWidgetMixin, self).render(name, value, final_attrs)
@@ -238,16 +237,12 @@ class PickerWidgetMixin(object):
 
         js_options = ",\n".join(options_list)
 
-        # Use provided id or generate hex to avoid collisions in document
-        id = final_attrs.get('id', name)
-        self.id = id
-
         clearBtn = quote('clearBtn', self.options.get('clearBtn', 'true')) == 'true'
 
         return mark_safe(
             BOOTSTRAP_INPUT_TEMPLATE[self.bootstrap_version]
                 % dict(
-                    id=id,
+                    id=self.id,
                     rendered_widget=rendered_widget,
                     clear_button=CLEAR_BTN_TEMPLATE[self.bootstrap_version] if clearBtn else "",
                     glyphicon=self.glyphicon,
